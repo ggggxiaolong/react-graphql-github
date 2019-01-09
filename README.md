@@ -1,44 +1,71 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Blog 博客地址
+https://www.robinwieruch.de/react-with-graphql-tutorial
 
-## Available Scripts
+### vimrc 配置
 
-In the project directory, you can run:
+```
+set number
+filetype plugin indent on
+" show existing tab with 4 spaces width
+set tabstop=4
+" when indeting with '>', use 4 spaces width
+set shiftwidth=4
+set expandtab
 
-### `npm start`
+"自动补全
+":inoremap ( ()<ESC>i
+":inoremap ) <c-r>=ClosePair(')')<CR>
+"by Suzzz：  原作者这种设置，输入{会自动补全，并且中间插入一个空行，将光标定位到空行。这对于函数是OK的，但是使用花括号初始化数组、vector时就不方便了。所以改为现在这种。只是补全，然后光标在左右括号中间。
+":inoremap { {<CR>}<ESC>O
+":inoremap { {}<ESC>i
+ 
+:inoremap } <c-r>=ClosePair('}')<CR>
+ 
+:inoremap [ []<ESC>i
+ 
+:inoremap ] <c-r>=ClosePair(']')<CR>
+ 
+":inoremap " ""<ESC>i
+ 
+":inoremap ' ''<ESC>i
+ 
+function! ClosePair(char)
+ 
+    if getline('.')[col('.') - 1] == a:char
+ 
+        return "\<Right>"
+ 
+    else
+ 
+        return a:char
+ 
+    endif
+ 
+endfunction
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+call plug#begin('~/.vim/plugged')
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Plug 'leafgarland/typescript-vim'
+Plug 'udalov/kotlin-vim'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+Plug 'Valloric/YouCompleteMe'
 
-### `npm test`
+call plug#end()
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
 
-### `npm run build`
+### 初始化包
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```shell
+## 安装 cnpm install -g yarn
+## yarn配置国内源 yarn config set registry 'https://registry.npm.taobao.org'
+yarn
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### 运行项目
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```shell
+yarn start
+```
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
