@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import {Data, OrganizationData, organizationWrap} from './github'
 
 const axiosGihubGraphQL = axios.create({
 	baseURL: 'https://api.github.com/graphql',
@@ -16,50 +17,43 @@ const GET_ORGANIZATION = `
 		}
 	}
 `
-interface Data<T> {
-    data: T
-}
-interface organizationWrap {
-    organization: OrganizationData;
-}
-interface OrganizationData {
-    name: string;
-    url: string;
-}
-const Organization = (organization: OrganizationData) => (
+const Organization: React.SFC<OrganizationData> = (data) => (
     <div>
         <p>
             <strong>Issues from Organization:</strong>
-            <a href={organization.url}>{organization.name}</a>
+            <a href={data.url}>{data.name}</a>
         </p>
    </div>
 )
-
-class App extends Component {
+interface IState {
+    path: string
+    organization?: OrganizationData | null
+}
+interface IProps {}
+class App extends Component<IProps, IState> {
   state = {
       path: 'the-road-to-learn-react/the-road-to-learn-react',
-      organization: null,
-      errors: null,
+      organization: null
   }
   componentDidMount(){
-	  // fetch data
+      // fetch data
       this.onFeatchFromGithub()
   }
   onChange = (event: React.FormEvent<HTMLInputElement>) => {
 	  this.setState({ path: event.currentTarget.value})
   }
   onSubmit = (event:React.FormEvent<HTMLFormElement>)  => {
-	  // fetch data
+      // fetch data
       this.onFeatchFromGithub()
 	  event.preventDefault()
   }
   onFeatchFromGithub = () => {
       axiosGihubGraphQL
         .post<Data<organizationWrap>>('', { query: GET_ORGANIZATION } )
-        .then(result => 
+        .then(result => {
             this.setState(() => ({
                 organization: result.data.data.organization,
-            })))
+            }))})
    }
   render() {
 	const {path, organization} = this.state
@@ -82,6 +76,13 @@ class App extends Component {
 				<button type="submit">Search</button>
 			</form>
 			<hr/>
+            {organization ?(
+                <Organization {...organization} />
+            ):(
+                <p>No infomation yet ...</p>
+            )
+            }
+            
 	    </div>
     )
  }
