@@ -16,6 +16,24 @@ const GET_ORGANIZATION = `
 		}
 	}
 `
+interface Data<T> {
+    data: T
+}
+interface organizationWrap {
+    organization: OrganizationData;
+}
+interface OrganizationData {
+    name: string;
+    url: string;
+}
+const Organization = (organization: OrganizationData) => (
+    <div>
+        <p>
+            <strong>Issues from Organization:</strong>
+            <a href={organization.url}>{organization.name}</a>
+        </p>
+   </div>
+)
 
 class App extends Component {
   state = {
@@ -37,15 +55,15 @@ class App extends Component {
   }
   onFeatchFromGithub = () => {
       axiosGihubGraphQL
-        .post('', { query: GET_ORGANIZATION } )
+        .post<Data<organizationWrap>>('', { query: GET_ORGANIZATION } )
         .then(result => 
             this.setState(() => ({
                 organization: result.data.data.organization,
-                errors: result.data.errors,
             })))
    }
   render() {
 	const {path, organization} = this.state
+    console.log(organization)
     return (
 	    <div>
 		    <h1>{TITLE}</h1>
@@ -64,17 +82,9 @@ class App extends Component {
 				<button type="submit">Search</button>
 			</form>
 			<hr/>
-            <Organization organization={organization}/>
 	    </div>
     )
  }
 }
 
-const Organization = ({ organization }) => (
-    <div>
-        <p>
-            <strong>Issues from Organization:</strong>
-            <a href={organization.url>{organization.name}</a>
-        </p>
-   </div>
 export default App;
