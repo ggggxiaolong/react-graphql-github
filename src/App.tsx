@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios, { AxiosError } from "axios";
-import { Data, OrganizationData, organizationWrap } from "./github";
+import { Data, OrganizationData, OrganizationWrap, RepositoryData, OrganizationProps } from "./github";
 
 const axiosGihubGraphQL = axios.create({
   baseURL: "https://api.github.com/graphql",
@@ -9,20 +9,24 @@ const axiosGihubGraphQL = axios.create({
   }
 });
 const TITLE = "React GraphQL Github Client";
-const GET_ORGANIZATION = `
+const GET_REPOSITORY_OF_ORGANIZATION = `
 	{
 		organization(login: "the-road-to-learn-react"){
 			name
-			url
+            url
+            repository(name: "the-road-to-learn-react"){
+                name
+                url
+            }
 		}
 	}
 `;
-const Organization: React.SFC<OrganizationData> = (data, error) => {
-  if (error) {
+const Organization: React.SFC<OrganizationProps> =  (props) => {
+  if (props.error) {
     return (
       <p>
         <strong>Something went wrong;</strong>
-        {error}
+        {props.error}
       </p>
     );
   }
@@ -30,7 +34,7 @@ const Organization: React.SFC<OrganizationData> = (data, error) => {
     <div>
       <p>
         <strong>Issues from Organization:</strong>
-        <a href={data.url}>{data.name}</a>
+        <a href={props.organization.repository.url}>{props.organization.repository.name}</a>
       </p>
     </div>
   );
@@ -61,7 +65,7 @@ class App extends Component<IProps, IState> {
   };
   onFeatchFromGithub = () => {
     axiosGihubGraphQL
-      .post<Data<organizationWrap>>("", { query: GET_ORGANIZATION })
+      .post<Data<OrganizationWrap>>("", { query: GET_REPOSITORY_OF_ORGANIZATION })
       .then(result => {
         this.setState(() => ({
           organization: result.data.data.organization
@@ -74,7 +78,7 @@ class App extends Component<IProps, IState> {
       });
   };
   render() {
-    const { path, organization } = this.state;
+    const { path, organization , error} = this.state;
     console.log(organization);
     return (
       <div>
@@ -93,7 +97,7 @@ class App extends Component<IProps, IState> {
         </form>
         <hr />
         {organization ? (
-          <Organization {...organization} />
+          <Organization {...({organization, error})} />
         ) : (
           <p>No infomation yet ...</p>
         )}
